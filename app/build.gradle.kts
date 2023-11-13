@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.practica1"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.practica1"
