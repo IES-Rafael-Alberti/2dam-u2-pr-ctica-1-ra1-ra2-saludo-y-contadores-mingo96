@@ -116,7 +116,7 @@ fun dialogo(editorShow:()->Unit, editorContenido:(String)->Unit, sumar : (String
         onDismissRequest = {},
         confirmButton = { contenido(editorShow, editorContenido, sumar)},
         title = { tituloDialogo() },
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false, usePlatformDefaultWidth = false)
     )
 }
 
@@ -138,6 +138,7 @@ fun contenido(editorShow:()->Unit, editorContenido:(String)->Unit, sumar : (Stri
                             },
             label = {Text("Introduce tu nombre")}
         )
+
         
         lineaDeBotones(textos = arrayOf("A", "L", "C"),
             cerrar = editorShow,
@@ -150,27 +151,28 @@ fun contenido(editorShow:()->Unit, editorContenido:(String)->Unit, sumar : (Stri
 @Composable
 fun lineaDeBotones(textos : Array<String>, cerrar : ()->Unit, accionesConParametros : Array<(String)->Unit>){
     Row (
-        Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
     ){
 
         Button(onClick = {
             cerrar()
             accionesConParametros[0]("A")
-        }) {
+        },
+            Modifier.padding(horizontal = 25.dp)) {
             Text(text = textos[0])
         }
-        Button(onClick = {
-            accionesConParametros[1]("")
-        }) {
+        Button(onClick = { accionesConParametros[1]("") },
+            Modifier.padding(horizontal = 25.dp)) {
             Text(text = textos[1])
         }
         Button(onClick = {
             cerrar()
             accionesConParametros[1](" ")
             accionesConParametros[0]("C")
-        }) {
+        },
+            Modifier.padding(horizontal = 25.dp)) {
             Text(text = textos[2])
         }
     }
@@ -178,8 +180,7 @@ fun lineaDeBotones(textos : Array<String>, cerrar : ()->Unit, accionesConParamet
 
 @Composable
 fun tituloDialogo(){
-    Row (horizontalArrangement = Arrangement.End,
-        modifier = Modifier.fillMaxWidth()){
+    Row (horizontalArrangement = Arrangement.End){
         Text(text = "Configuracion", fontSize =30.sp)
     }
 }
