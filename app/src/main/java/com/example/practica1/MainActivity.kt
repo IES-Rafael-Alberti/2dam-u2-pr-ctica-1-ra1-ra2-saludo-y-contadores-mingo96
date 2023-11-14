@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -94,6 +96,7 @@ fun inicio(){
             Text(text = "Saludar")
         }
         Text(text = "")
+        Text("A$contadorAceptar, C$contadorCancelar")
 
 
         if (showDialog){
@@ -101,7 +104,7 @@ fun inicio(){
         }
 
         if (contenidoTexto.isNotEmpty()&& !showDialog){
-            Text(text = "bienvenido, $contenidoTexto")
+            Text(text = "bienvenido $contenidoTexto")
         }
     }
 }
@@ -109,6 +112,7 @@ fun inicio(){
 @Composable
 fun dialogo(editorShow:()->Unit, editorContenido:(String)->Unit, sumar : (String)->Unit){
     AlertDialog(
+        modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),
         onDismissRequest = {},
         confirmButton = { contenido(editorShow, editorContenido, sumar)},
         title = { tituloDialogo() },
@@ -135,14 +139,16 @@ fun contenido(editorShow:()->Unit, editorContenido:(String)->Unit, sumar : (Stri
             label = {Text("Introduce tu nombre")}
         )
         
-        lineaDeBotones(textos = arrayOf("A", "L", "C"), arrayOf(editorShow), sumar)
+        lineaDeBotones(textos = arrayOf("A", "L", "C"),
+            cerrar = editorShow,
+            accionesConParametros = arrayOf(sumar, editorContenido))
         
     }
 }
 
 
 @Composable
-fun lineaDeBotones(textos : Array<String>, acciones: Array<()->Unit>, sumar : (String)->Unit){
+fun lineaDeBotones(textos : Array<String>, cerrar : ()->Unit, accionesConParametros : Array<(String)->Unit>){
     Row (
         Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -150,17 +156,20 @@ fun lineaDeBotones(textos : Array<String>, acciones: Array<()->Unit>, sumar : (S
     ){
 
         Button(onClick = {
-            acciones[0]
-            sumar("A")
+            cerrar()
+            accionesConParametros[0]("A")
         }) {
             Text(text = textos[0])
         }
-        Button(onClick = acciones[0]) {
+        Button(onClick = {
+            accionesConParametros[1]("")
+        }) {
             Text(text = textos[1])
         }
         Button(onClick = {
-            acciones[0]
-            sumar("C")
+            cerrar()
+            accionesConParametros[1](" ")
+            accionesConParametros[0]("C")
         }) {
             Text(text = textos[2])
         }
